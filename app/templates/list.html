@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokédex</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Poppins', sans-serif;
+    }
+    .card {
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .pokemon-img {
+      width: 120px;
+      height: 120px;
+      margin: 15px auto 0 auto;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .card:hover .pokemon-img {
+      transform: scale(1.1);
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #333;
+    }
+    .pokemon-types span {
+      margin: 2px 5px;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      text-transform: capitalize;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      display: inline-block;
+    }
+    .grass { background-color: #78C850; }
+    .poison { background-color: #A040A0; }
+    .fire { background-color: #F08030; }
+    .water { background-color: #6890F0; }
+    .electric { background-color: #F8D030; }
+    .bug { background-color: #A8B820; }
+    .normal { background-color: #A8A878; }
+    .fairy { background-color: #EE99AC; }
+    .flying { background-color: #A890F0; }
+    .ground { background-color: #E0C068; }
+    .rock { background-color: #B8A038; }
+    .psychic { background-color: #F85888; }
+    .ice { background-color: #98D8D8; }
+    .dragon { background-color: #7038F8; }
+    .ghost { background-color: #705898; }
+    .dark { background-color: #705848; }
+    .steel { background-color: #B8B8D0; }
+    .fighting { background-color: #C03028; }
+  </style>
+</head>
+<body>
+<main class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-primary">Pokédex</h2>
+    <p class="text-muted">Clique em um Pokémon para ver mais detalhes.</p>
+  </div>
+  <div id="pokedex-list" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4"></div>
+</main>
+
+<script>
+async function carregarPokemon() {
+    const list = document.getElementById('pokedex-list');
+    list.innerHTML = '<div class="col-12 text-center"><p class="text-muted">Carregando Pokémons...</p></div>';
+
+    try {
+        const response = await fetch('/api/v1/pokemon/');
+        if (!response.ok) throw new Error('Erro na requisição');
+
+        const data = await response.json();
+        list.innerHTML = '';
+
+        data.result.forEach(pokemon => {
+            const col = document.createElement('div');
+            col.className = 'col';
+
+            const card = document.createElement('div');
+            card.className = 'card h-100 text-center border-0';
+
+            card.addEventListener('click', () => {
+                window.location.href = `/pokemon-detail/${pokemon.id}/`;
+            });
+
+            const img = document.createElement('img');
+            img.src = pokemon.sprite;
+            img.alt = pokemon.name;
+            img.className = 'pokemon-img';
+
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body pb-0';
+
+            const cardTitle = document.createElement('h5');
+            cardTitle.className = 'card-title text-capitalize mt-2';
+            cardTitle.textContent = `${pokemon.name} `;
+
+            const pokemonId = document.createElement('small');
+            pokemonId.className = 'text-muted';
+            pokemonId.textContent = `#${pokemon.id}`;
+            cardTitle.appendChild(pokemonId);
+
+            const cardTypes = document.createElement('div');
+            cardTypes.className = 'pokemon-types text-center mt-3';
+            pokemon.types.forEach(type => {
+                const span = document.createElement('span');
+                span.textContent = type;
+                span.className = type.toLowerCase();
+                cardTypes.appendChild(span);
+            });
+
+            card.appendChild(img);
+            cardBody.appendChild(cardTitle);
+            cardBody.appendChild(cardTypes);
+            card.appendChild(cardBody);
+            col.appendChild(card);
+            list.appendChild(col);
+        });
+
+    } catch (error) {
+        list.innerHTML = '<div class="col-12 text-center"><p class="text-danger">Erro ao carregar dados. Tente novamente mais tarde.</p></div>';
+        console.error(error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', carregarPokemon);
+</script>
+</body>
+</html>
