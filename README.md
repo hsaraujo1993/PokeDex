@@ -37,3 +37,27 @@ Este projeto é uma Pokédex desenvolvida com Django e Django REST Framework, qu
 - `app/` - Configuração principal do Django
 - `pokedex/` - App com views, serializers e urls
 - `templates/` - HTMLs responsivos para listagem e detalhes
+
+### Rotas do Frontend
+- `/pokemon-list/` — Listagem dos pokémons
+- `/pokemon-detail/<id>/` — Detalhes do pokémon selecionado
+
+## Como rodar com Docker
+
+1. Certifique-se de ter o Docker instalado em sua máquina.
+2. Construa a imagem do projeto:
+   ```bash
+   docker build -t pokedex-django .
+   ```
+3. Execute o container:
+   ```bash
+   docker run -p 8000:8000 pokedex-django
+   ```
+4. Acesse em [http://localhost:8000/pokemon-list/](http://localhost:8000/pokemon-list/)
+
+> Se precisar rodar migrações manualmente, utilize:
+> ```bash
+> docker run pokedex-django python manage.py migrate
+> ```
+
+
