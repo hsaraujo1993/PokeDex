@@ -14,7 +14,7 @@ Este projeto é uma Pokédex desenvolvida com Django e Django REST Framework, qu
 - Django
 - Django REST Framework
 - Bootstrap 5
-- PokeAPI
+- Redis (Cache)
 
 ## Como rodar
 1. Clone o repositório
